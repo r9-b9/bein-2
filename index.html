@@ -7,17 +7,41 @@
     body {
       margin: 0;
       background-color: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
     video {
-      width: 100vw;
-      height: 100vh;
+      width: 100%;
+      max-width: 100%;
+      height: auto;
     }
   </style>
 </head>
 <body>
-  <video controls autoplay>
-    <source src="http://het112a.4rouwanda-shop.store/live/4798998070/index.m3u8?t=M-Wil-SeQvC14i5gBP2hug&e=1748208861" type="application/x-mpegURL">
-    المتصفح لا يدعم تشغيل الفيديو.
-  </video>
+  <video id="video" controls autoplay></video>
+
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script>
+    const video = document.getElementById('video');
+    const videoSrc = "http://het112a.4rouwanda-shop.store/live/4798998070/index.m3u8?t=M-Wil-SeQvC14i5gBP2hug&e=1748208861";
+
+    if (Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource(videoSrc);
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MANIFEST_PARSED, function () {
+        video.play();
+      });
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = videoSrc;
+      video.addEventListener('loadedmetadata', function () {
+        video.play();
+      });
+    } else {
+      document.body.innerHTML = "<p style='color:white'>هذا المتصفح لا يدعم تشغيل البث.</p>";
+    }
+  </script>
 </body>
 </html>
